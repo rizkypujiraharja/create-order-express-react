@@ -1,4 +1,5 @@
 const express = require('express')
+const axios = require('axios')
 const app = express()
 const port = 3000
 const models = require('./models/index');
@@ -49,10 +50,21 @@ app.post('/orders', async (req, res) => {
         })
 
     // Check Payment Status
-    const status = Math.random() < 0.5;
-    order.update({ status: status ? 1 : 2 })
+    const payment = await axios.post(
+        "http://localhost:3001/check-payment",
+        { orderId: order.id },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + req.headers.authorization,
+            },
+        })
+        .then(response => response.data)
+        .catch(err => console.log('Error ' + err));
 
-    if (status) {
+    order.update({ status: payment.isPaid ? 1 : 2 })
+
+    if (payment.isPaid) {
         // Update Status After 10s Order Created
         setTimeout(async function () {
             // Check if order canceled by user
