@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import MainLayout from './../layouts/MainLayout'
 import ApiService from './../api-service'
 import { useParams } from 'react-router-dom'
+import swal from 'sweetalert'
 
 const OrderDetail = () => {
     const { id } = useParams()
@@ -13,9 +14,19 @@ const OrderDetail = () => {
                 setOrder(response.data)
             })
             .catch(err => {
-                console.log(`Error ${err}`)
+                swal("Error", err.message, "error");
             })
     }, [])
+
+    const cancelOrder = () => {
+        ApiService.post('/orders/cancel/' + parseInt(id))
+            .then(response => {
+                setOrder(response.data)
+            })
+            .catch(err => {
+                swal("Error", err.message, "error");
+            })
+    }
 
     const getStatus = status => {
         switch (status) {
@@ -28,7 +39,7 @@ const OrderDetail = () => {
                 break;
 
             case 2:
-                return `<span class="bg-red-600 rounded text-xs px-5 text-white">Rejected</span>`
+                return `<span class="bg-red-600 rounded text-xs px-5 text-white">Canceled</span>`
                 break;
 
             case 3:
@@ -72,7 +83,7 @@ const OrderDetail = () => {
                             }
                         </div >
                         {
-                            order.status == 3 ? <button className="bg-red-600 mt-4 rounded text-xs py-2 px-3 text-white">Cancel Order</button> : ''
+                            order.status != 3 && order.status != 2 ? <button className="bg-red-600 mt-4 rounded text-xs py-2 px-3 text-white" onClick={cancelOrder}>Cancel Order</button> : ''
                         }
                     </div>
                 </div>

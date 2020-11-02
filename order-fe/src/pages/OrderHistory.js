@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import MainLayout from './../layouts/MainLayout'
 import ApiService from './../api-service'
 import { Link } from 'react-router-dom'
+import swal from 'sweetalert'
 
 const OrderHisotry = () => {
     const [orders, setOrders] = useState([])
@@ -11,7 +12,7 @@ const OrderHisotry = () => {
                 setOrders(response.data.data)
             })
             .catch(err => {
-                console.log(`Error ${err}`)
+                swal("Error", err.message, "error");
             })
     }, [])
 
@@ -26,7 +27,7 @@ const OrderHisotry = () => {
                 break;
 
             case 2:
-                return `<span class="bg-red-600 rounded text-xs px-5 text-white">Rejected</span>`
+                return `<span class="bg-red-600 rounded text-xs px-5 text-white">Canceled</span>`
                 break;
 
             case 3:

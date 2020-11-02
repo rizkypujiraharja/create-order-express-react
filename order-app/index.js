@@ -48,6 +48,14 @@ app.get('/orders/show/:id', async (req, res) => {
     res.json(order)
 })
 
+app.post('/orders/cancel/:id', async (req, res) => {
+    const order = await models.Order.findByPk(req.params.id)
+
+    order.update({ status: 2 })
+
+    res.json(order)
+})
+
 app.post('/orders', async (req, res) => {
     const request = req.body
     const total_price = request.orders.reduce((tmpPrice, order) => order.qty * order.price, 0)

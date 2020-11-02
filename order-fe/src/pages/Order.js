@@ -4,6 +4,7 @@ import ListProduct from './../components/ListProduct'
 import Cart from './../components/Cart'
 import ApiService from './../api-service'
 import { useDispatch, useSelector } from 'react-redux'
+import swal from 'sweetalert'
 
 import { setProducts } from './../store/actions/product'
 
@@ -19,7 +20,7 @@ const Order = () => {
                 dispatch(setProducts(response.data))
             })
             .catch(err => {
-                console.log(`Error ${err}`)
+                swal("Error", err.message, "error");
             })
     }, [])
 
